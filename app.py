@@ -1,6 +1,11 @@
 import streamlit as st
 from utils.firebase_operations import initialize_firebase, upload_to_firebase  # Import your Firebase functions
+from utils.file_operations import load_users
+from utils.welcome import welcome_page
+from utils.login import login_page
+from utils.intake_form import display_intake_form
 from utils.history_with_ai import run_virtual_patient
+
 
 st.set_page_config(layout="wide")
 
