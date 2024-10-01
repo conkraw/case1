@@ -4,9 +4,6 @@ import openai
 from docx import Document
 import time
 
-# Set up OpenAI API key from Streamlit secrets
-openai.api_key = st.secrets["OPENAI_API_KEY"]
-
 import streamlit as st
 import openai
 
@@ -44,14 +41,8 @@ def run_virtual_patient():
         virtual_patient_response = get_chatgpt_response(user_input)
         st.write(f"Virtual Patient: {virtual_patient_response}")
 
-    # Display the entire conversation history (optional)
-    for msg in st.session_state.messages:
-        role = "User" if msg["role"] == "user" else "Virtual Patient"
-        st.write(f"{role}: {msg['content']}")
-
 if __name__ == "__main__":
     run_virtual_patient()
-
 
 
 
