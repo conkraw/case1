@@ -13,7 +13,7 @@ openai.api_key = st.secrets["OPENAI_API_KEY"]
 # Initialize the message history in session state
 if 'messages' not in st.session_state:
     st.session_state.messages = [
-        {"role": "assistant", "content": "Role play a parent who is going to receive bad news from a doctor."}
+        {"role": "assistant", "content": "Role play a parent who is going to receive bad news from a doctor. Be concerned."}
     ]
 
 def get_chatgpt_response(user_input):
