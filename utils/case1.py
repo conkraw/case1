@@ -7,52 +7,51 @@ import time
 # Set up OpenAI API key from Streamlit secrets
 openai.api_key = st.secrets["OPENAI_API_KEY"]
 
+import streamlit as st
+import openai
+
+# Set up OpenAI API key from Streamlit secrets
+openai.api_key = st.secrets["OPENAI_API_KEY"]
+
+# Initialize the message history in session state
+if 'messages' not in st.session_state:
+    st.session_state.messages = [
+        {"role": "assistant", "content": "Role play a parent who is going to receive bad news from a doctor."}
+    ]
+
 def get_chatgpt_response(user_input):
+    # Append the user input to the message history
+    st.session_state.messages.append({"role": "user", "content": user_input})
+    
+    # Call the OpenAI API with the full message history
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        messages=[
-            {"role": "user", "content": user_input},
-            {"role": "assistant", "content": "Role play a parent who is going to receive bad news from a doctor."}
-        ]
+        messages=st.session_state.messages
     )
-    return response['choices'][0]['message']['content']
+    
+    # Get the assistant's response and append it to the message history
+    assistant_response = response['choices'][0]['message']['content']
+    st.session_state.messages.append({"role": "assistant", "content": assistant_response})
+    
+    return assistant_response
 
 def run_virtual_patient():
     st.title("Virtual Patient: Case #1")
 
-    st.info(
-        "You will have the opportunity to communicate with a parent. "
-        "You will be limited to 15 minutes. Alternatively, you may end the session."
-    )
+    user_input = st.text_input("Ask the virtual patient a question about their symptoms:")
+    
+    if st.button("Submit") and user_input:
+        virtual_patient_response = get_chatgpt_response(user_input)
+        st.write(f"Virtual Patient: {virtual_patient_response}")
 
-    # Initialize start_time only if it's not already set
-    if 'start_time' not in st.session_state or st.session_state.start_time is None:
-        st.session_state.start_time = time.time()
+    # Display the entire conversation history (optional)
+    for msg in st.session_state.messages:
+        role = "User" if msg["role"] == "user" else "Virtual Patient"
+        st.write(f"{role}: {msg['content']}")
 
-    # Calculate elapsed time
-    elapsed_time = (time.time() - st.session_state.start_time) / 60
+if __name__ == "__main__":
+    run_virtual_patient()
 
-    # Display patient information
-    if elapsed_time < 15:
-        with st.form("question_form"):
-            user_input = st.text_input("Introduce yourself to start the simulation.")
-            submit_button = st.form_submit_button("Submit")
 
-            if submit_button and user_input:
-                virtual_patient_response = get_chatgpt_response(user_input)
-                st.write(f"Virtual Patient: {virtual_patient_response}")
-    else:
-        st.warning("Session time is up. Please end the session.")
-        if st.button("End Session"):
-            st.session_state.start_time = None  # Reset start_time only when ending session
-            st.session_state.page = "ending"
-            st.success("Session ended. You can start a new session.")
-
-    # Option to move to a new screen
-    if st.button("End Session"):
-        st.session_state.start_time = None
-        st.session_state.page = "ending"
-        st.rerun()
-        st.write("Redirecting to a new screen...")
 
 
