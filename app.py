@@ -14,12 +14,6 @@ def main():
 
     print(f"Current page: {st.session_state.page}")  # Debugging statement
 
-    # Collect and upload session data whenever the page changes
-    #previous_page = st.session_state.get("previous_page")
-    #if previous_page != st.session_state.page:
-    #    save_session_data(db)  # Pass db to the save function
-    #    st.session_state.previous_page = st.session_state.page  
-
     # Page routing
     if st.session_state.page == "welcome":
         welcome_page()
@@ -32,22 +26,6 @@ def main():
         run_virtual_patient()
     elif st.session_state.page == "ending":
         display_simple_success1()
-
-def save_session_data(db):
-    session_data = collect_session_data()
-    try:
-        upload_message = upload_to_firebase(db, session_data)  # Pass db as an argument
-        st.success(upload_message)  # Provide feedback to the user
-    except Exception as e:
-        st.error(f"Error saving progress: {e}")
-
-
-def collect_session_data():
-    session_data = {
-        "unique_code": st.session_state.get("unique_code", ""),
-        # ... add other session state variables here
-    }
-    return session_data
-
+        
 if __name__ == "__main__":
     main()
