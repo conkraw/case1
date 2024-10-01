@@ -4,7 +4,7 @@ from utils.file_operations import load_users
 from utils.welcome import welcome_page
 from utils.login import login_page
 from utils.intake_form import display_intake_form
-from utils.history_with_ai import run_virtual_patient
+from utils.case1 import run_virtual_patient
 from utils.simple_success1 import display_simple_success1
 
 
